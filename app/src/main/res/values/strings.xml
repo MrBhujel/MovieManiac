@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MovieManiac</string>
+
+    <string-array name="movie_thumbnails">
+        <item>https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdna.artstation.com%2Fp%2Fassets%2Fimages%2Fimages%2F063%2F096%2F684%2Flarge%2Fwilliam-j-harris-oppenheimer-movie-poster-2023.jpg%3F1684720979&amp;f=1&amp;nofb=1&amp;ipt=5437f56fc8ec1505b29c856a7712b8f4538085cdeea402ecf3d99189569b1f9f</item>
+        <item>https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwebneel.com%2Fdaily%2Fsites%2Fdefault%2Ffiles%2Fimages%2Fdaily%2F09-2019%2F2-movie-poster-design-aladdin-disney-glossy-composite.jpg&amp;f=1&amp;nofb=1&amp;ipt=e348a0304d00f4fc26baaffb972a0d0c418ebcc08722f65041a4cef7dc069659</item>
+        <item>https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.2H5SRsxjxjRTrUEwQy-S7wHaLH%3Fpid%3DApi&amp;f=1&amp;ipt=c73bb0ed0478aeea8eb536f9c06613ddccb6a497fbc9933f5e6a6cc661798d54&amp;ipo=images</item>
+        <item>https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.Wu1KqK10dOaQxQBnErsfqQHaK-%3Fpid%3DApi&amp;f=1&amp;ipt=0f54e259dc19a3282732f55994a54ecf663bb94e1404e2d4524f42800780d922&amp;ipo=images</item>
+        <item>https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.b1aAvwKREVBUOHts-d8BogHaKO%3Fpid%3DApi&amp;f=1&amp;ipt=2e18a39e98c30fcafa29b15c5243a050dd2cd8bbca88c04d4d2e84a66bf53a30&amp;ipo=images</item>
+        <item>https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.pV3VBmxyDDAVaerE8IIMnwHaK9%3Fpid%3DApi&amp;f=1&amp;ipt=b6c1c1f3869fb043de9c3a5e33dd91a4a4e653aa9c6f2b89a6a3c55d94567b26&amp;ipo=images</item>
+        <item>https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.mxlA-LOxaiyUZBhS3SD_HwHaLj%3Fpid%3DApi&amp;f=1&amp;ipt=7230ccac70f29f09782f6245ea9e7f7a1cac03528d3a092f6bf3ac80679425a7&amp;ipo=images</item>
+        <item>https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.owj6qgBwERpZM7M0VX86dwHaJQ%3Fpid%3DApi&amp;f=1&amp;ipt=6eddaca6386b26bb0a96b72ee891c4ebc5d38a76d12596adb86a821f29699435&amp;ipo=images</item>
+        <item>https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.t93gXiFi9mZEe-tjQre7GgHaKe%3Fpid%3DApi&amp;f=1&amp;ipt=4e00e76196b3711ae959dc0cd60baebd2469f4473c062205e22811d871a546eb&amp;ipo=images</item>
+        <item>https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.QxZCCgdr5UuvsCZrqU3uLgHaKl%3Fpid%3DApi&amp;f=1&amp;ipt=f71a763b0cebe73e14fb08dace21a8597b83ee151bc88e7869780e4b9dfc3ce8&amp;ipo=images</item>
+    </string-array>
+
+</resources>
