@@ -29,6 +29,10 @@ class FirstInitialScreenViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun navigateToHome(isHomeButtonClicked: Boolean) {
-        _uiState.value = _uiState.value.copy(isHomeButtonClicked = isHomeButtonClicked)
+        _uiState.value = _uiState.value.copy(isHomeButtonClicked = true)
+    }
+
+    fun resetHomeButtonState() {
+        _uiState.value = _uiState.value.copy(isHomeButtonClicked = false)
     }
 }

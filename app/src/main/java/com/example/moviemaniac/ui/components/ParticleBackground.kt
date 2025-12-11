@@ -32,15 +32,7 @@ import com.example.moviemaniac.core.particleSystem.Particle
 import com.example.moviemaniac.core.particleSystem.ParticleSystem
 
 @Composable
-fun ParticleBackground(
-    modifier: Modifier = Modifier,
-    text: String = "Dreamy Night",
-    textStyle: TextStyle = TextStyle(
-        fontSize = 48.sp,
-        fontWeight = FontWeight.Bold,
-        color = Color.White.copy(alpha = 0.9f)
-    )
-) {
+fun ParticleBackground() {
     var particleSystem by remember { mutableStateOf<ParticleSystem?>(null) }
     var lastUpdateTime by remember { mutableStateOf(System.currentTimeMillis()) }
 
@@ -93,16 +85,7 @@ fun ParticleBackground(
         }
 
         // Text overlay
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = text,
-                style = textStyle,
-                modifier = Modifier.blur(radius = 1.dp)
-            )
-        }
+        // Box () goes here or any composable components
     }
 }
 
