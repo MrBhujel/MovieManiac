@@ -3,6 +3,7 @@ package com.example.moviemaniac.feature.firstOpenScreen.presentation
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -94,11 +95,16 @@ fun FirstInitialScreen(
             }
 
             items(movieThumbnails.size) { index ->
-                val thumbnailUrl = movieThumbnails[index]
-                MovieCardThumbnail(
-                    title = "Movie ${index + 1}",
-                    imageUrl = thumbnailUrl
-                )
+                BoxWithConstraints {
+                    val cellWidth = maxWidth
+                    val thumbnailUrl = movieThumbnails[index]
+
+                    MovieCardThumbnail(
+                        title = "Movie ${index + 1}",
+                        imageUrl = thumbnailUrl,
+                        cardWidth = cellWidth.value.toInt()
+                    )
+                }
             }
         }
     }
@@ -111,7 +117,7 @@ fun FirstInitialScreen(
             viewModel.resetHomeButtonState()
 
             // Then navigating
-            navController.navigate(NavRoutes.screenB)
+            navController.navigate(NavRoutes.mainScreen)
         }
     }
 

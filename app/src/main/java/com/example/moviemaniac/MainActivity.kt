@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
-import com.example.moviemaniac.feature.firstOpenScreen.presentation.components.FirstInitialScreenRoute
 import com.example.moviemaniac.ui.components.AppNavHost
 import com.example.moviemaniac.ui.theme.MovieManiacTheme
 import dagger.hilt.android.AndroidEntryPoint

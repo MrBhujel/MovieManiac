@@ -8,5 +8,5 @@ data class HomeScreenUiState(
 
 enum class ShowType {
     MOVIE,
-    TVSHOW
+    TV_SHOW
 }

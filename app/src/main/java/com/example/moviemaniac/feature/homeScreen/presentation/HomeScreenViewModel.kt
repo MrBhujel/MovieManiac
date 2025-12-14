@@ -36,6 +36,7 @@ class HomeScreenViewModel @Inject constructor() : ViewModel() {
             is HomeScreenUiEvent.MovieCardClicked -> navigateToMovieDetails(event.movieId)
             is HomeScreenUiEvent.PagerDotClicked -> updateHorizontalPagerPage(event.page)
             is HomeScreenUiEvent.PagerPageChanged -> updateHorizontalPagerPage(event.page)
+            is HomeScreenUiEvent.ShowTypeChanged -> updateShowType(event.showType)
         }
     }
 
@@ -66,5 +67,9 @@ class HomeScreenViewModel @Inject constructor() : ViewModel() {
                 _uiState.value = _uiState.value.copy(currentHorizontalPagerPage = nextPage)
             }
         }
+    }
+
+    fun updateShowType(type: ShowType) {
+        _uiState.value =uiState.value.copy(showType = type)
     }
 }

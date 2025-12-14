@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.moviemaniac.core.util.NavRoutes
 import com.example.moviemaniac.feature.firstOpenScreen.presentation.components.FirstInitialScreenRoute
-import com.example.moviemaniac.feature.homeScreen.presentation.components.HomeScreenRoute
+import com.example.moviemaniac.feature.mainScreen.presentation.components.MainScreenRoute
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -35,7 +35,7 @@ fun AppNavHost(navController: NavHostController) {
 
         // Navigating to home screen
         composable(
-            route = NavRoutes.screenB,
+            route = NavRoutes.mainScreen,
             enterTransition = {
                 slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
             },
@@ -49,7 +49,7 @@ fun AppNavHost(navController: NavHostController) {
                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }
         ) {
-            HomeScreenRoute()
+            MainScreenRoute(navController = navController)
         }
     })
 }

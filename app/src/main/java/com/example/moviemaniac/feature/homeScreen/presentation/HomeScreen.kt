@@ -16,10 +16,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.moviemaniac.R
+import com.example.moviemaniac.feature.homeScreen.presentation.components.MovieSection
 import com.example.moviemaniac.feature.homeScreen.presentation.components.PagerDotIndicators
 import com.example.moviemaniac.feature.homeScreen.presentation.components.PagerMovieCard
+import com.example.moviemaniac.feature.homeScreen.presentation.components.ShowTypeChip
+import com.example.moviemaniac.feature.homeScreen.presentation.components.TvSection
 
 @Composable
 fun HomeScreen(
@@ -28,7 +33,9 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel
 ) {
 
-    var isAnimating  by remember { mutableStateOf(false) }
+    var isAnimating by remember { mutableStateOf(false) }
+
+    val movieThumbnails = stringArrayResource(id = R.array.movie_thumbnails).toList()
 
     val pagerState = rememberPagerState(
         initialPage = uiState.currentHorizontalPagerPage,
@@ -76,6 +83,28 @@ fun HomeScreen(
                     onDotClick = { page ->
                         onEvent(HomeScreenUiEvent.PagerDotClicked(page))
                     }
+                )
+            }
+        }
+
+        item {
+            ShowTypeChip(
+                selected = uiState.showType,
+                onSelectedChange = {
+                    onEvent(HomeScreenUiEvent.ShowTypeChanged(it))
+                }
+            )
+        }
+
+        item {
+
+            if (uiState.showType == ShowType.MOVIE) {
+                MovieSection(
+                    movieThumbnails = movieThumbnails
+                )
+            } else {
+                TvSection(
+                    thumbNail = movieThumbnails
                 )
             }
         }
