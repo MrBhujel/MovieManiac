@@ -6,11 +6,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.moviemaniac.feature.searchScreen.presentation.SearchScreen
 import com.example.moviemaniac.feature.settingsScreen.presentation.SettingsScreen
 import com.example.moviemaniac.core.util.NavRoutes
 import com.example.moviemaniac.feature.homeScreen.presentation.components.HomeScreenRoute
 import com.example.moviemaniac.feature.recentScreen.presentation.RecentScreen
+import com.example.moviemaniac.feature.searchScreen.presentation.components.SearchScreenRoute
 
 @Composable
 fun MainScreenNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -66,7 +66,7 @@ fun MainScreenNavHost(navController: NavHostController, modifier: Modifier = Mod
                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }
         ) {
-            SearchScreen()
+            SearchScreenRoute()
         }
         composable(
             route = NavRoutes.settingScreen,

@@ -4,14 +4,23 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moviemaniac.domain.repository.AllTrendingRepository
+import com.example.moviemaniac.domain.repository.MovieRepository
+import com.example.moviemaniac.domain.repository.TvRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor() : ViewModel() {
+class HomeScreenViewModel @Inject constructor(
+    private val movieRepository: MovieRepository,
+    private val tvRepository: TvRepository,
+    private val allTrendingRepository: AllTrendingRepository
+) : ViewModel() {
 
     private var _uiState = mutableStateOf(
         HomeScreenUiState(
@@ -29,6 +38,28 @@ class HomeScreenViewModel @Inject constructor() : ViewModel() {
     init {
         startAutoSwipe()
     }
+
+    // Movies
+    val popularMovies = movieRepository.getPopularMovies()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val nowPlayingMovies = movieRepository.getNowPlayingMovies()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val topRatedMovies = movieRepository.getTopRatedMovies()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    // Tv Shows
+    val airingTodayTv = tvRepository.getAiringTodayTv()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val onTheAirTv = tvRepository.getOnTheAirTv()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val popularTv = tvRepository.getPopularTv()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val topRatedTv = tvRepository.getTopRatedTv()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    // All Trending
+    val allTrending = allTrendingRepository.getAllTrending()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun onEvent(event: HomeScreenUiEvent) {
         when (event) {
@@ -70,6 +101,6 @@ class HomeScreenViewModel @Inject constructor() : ViewModel() {
     }
 
     fun updateShowType(type: ShowType) {
-        _uiState.value =uiState.value.copy(showType = type)
+        _uiState.value = uiState.value.copy(showType = type)
     }
 }

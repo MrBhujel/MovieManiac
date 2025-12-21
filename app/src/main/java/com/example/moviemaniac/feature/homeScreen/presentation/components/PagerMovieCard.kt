@@ -23,14 +23,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.example.moviemaniac.domain.model.AllTrendingTopCard
 
 @Composable
 fun PagerMovieCard(
-    imageUrl: String,
-    genre: List<String>
+    movie: AllTrendingTopCard,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .aspectRatio(3f / 2f)
             .padding(10.dp),
@@ -63,8 +64,12 @@ fun PagerMovieCard(
                                 tint = Color.Red
                             )
 
+                            // Rating
                             Text(
-                                text = "9.9",
+                                text = movie.rating
+                                    .toDoubleOrNull()
+                                    ?.let { String.format("%.1f", it) }
+                                    ?: "0.0",
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
                             )
@@ -77,27 +82,44 @@ fun PagerMovieCard(
                                 .padding(start = 10.dp, top = 10.dp, bottom = 10.dp),
                         ) {
                             // Title section
-                            Text(
-                                text = "This is a movie title",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            (movie.movieTitle ?: movie.tvTitle)?.let {
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
 
                             // Type section
                             Text(
-                                text = "Type"
+                                text = movie.mediaType.replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase() else it.toString()
+                                },
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                             )
+
+                            // Release date section
+                            (movie.movieReleaseDate ?: movie.tvReleaseDate)?.let {
+                                Text(
+                                    text = it,
+                                    color = MaterialTheme
+                                        .colorScheme
+                                        .onSurface
+                                        .copy(alpha = 0.6f)
+                                )
+                            }
                         }
                     }
 
                     // Genre section
-                    Text(
-                        text = genre.joinToString(separator = ", "),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+//                    Text(
+//                        text = genre.joinToString(separator = ", "),
+//                        maxLines = 1,
+//                        overflow = TextOverflow.Ellipsis,
+//                    )
 
                     // Summary title and summary section
                     Text(
@@ -109,7 +131,7 @@ fun PagerMovieCard(
 
                     // Summary
                     Text(
-                        text = "This is the move summary section bla bla bla bla bla",
+                        text = movie.overview,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -123,11 +145,12 @@ fun PagerMovieCard(
                     .fillMaxHeight()
             ) {
                 AsyncImage(
-                    model = imageUrl,
+                    model = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
                     contentDescription = "Poster",
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(2f / 3f)
+                        .padding(top = 20.dp, end = 10.dp)
                 )
             }
         }
@@ -137,7 +160,17 @@ fun PagerMovieCard(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewPagerMovieCard() {
-    val imageUrl = ""
-    val genre = listOf("Action", "Drama", "Comedy", "Animation", "Adventure")
-    PagerMovieCard(imageUrl = imageUrl, genre = genre)
+    PagerMovieCard(
+        movie = AllTrendingTopCard(
+            id = 1,
+            movieTitle = "Venom: Let There Be Carnage",
+            tvTitle = null,
+            overview = "Aghopia gadosih gadsoi j",
+            rating = "8",
+            posterPath = "",
+            mediaType = "Movie",
+            movieReleaseDate = "2021-10-03",
+            tvReleaseDate = ""
+        )
+    )
 }

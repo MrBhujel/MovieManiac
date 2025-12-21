@@ -1,8 +1,12 @@
 package com.example.moviemaniac.feature.homeScreen.presentation
 
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,16 +14,19 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.moviemaniac.R
+import com.example.moviemaniac.feature.homeScreen.presentation.components.DisclaimerScreen
 import com.example.moviemaniac.feature.homeScreen.presentation.components.MovieSection
 import com.example.moviemaniac.feature.homeScreen.presentation.components.PagerDotIndicators
 import com.example.moviemaniac.feature.homeScreen.presentation.components.PagerMovieCard
@@ -33,6 +40,21 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel
 ) {
 
+    val context = LocalContext.current
+
+    val popularMovies by viewModel.popularMovies.collectAsState(initial = emptyList())
+    val nowPlayingMovies by viewModel.nowPlayingMovies.collectAsState(initial = emptyList())
+    val topRatedMovies by viewModel.topRatedMovies.collectAsState(initial = emptyList())
+
+    val airingTodayTv by viewModel.airingTodayTv.collectAsState(initial = emptyList())
+    val onTheAirTv by viewModel.onTheAirTv.collectAsState(initial = emptyList())
+    val popularTv by viewModel.popularTv.collectAsState(initial = emptyList())
+    val topRatedTv by viewModel.topRatedTv.collectAsState(initial = emptyList())
+
+    val allTrending by viewModel.allTrending.collectAsState(initial = emptyList())
+    val limitedTrending = allTrending.take(10)
+
+
     var isAnimating by remember { mutableStateOf(false) }
 
     val movieThumbnails = stringArrayResource(id = R.array.movie_thumbnails).toList()
@@ -40,7 +62,7 @@ fun HomeScreen(
     val pagerState = rememberPagerState(
         initialPage = uiState.currentHorizontalPagerPage,
         initialPageOffsetFraction = 0f,
-        pageCount = { 10 }
+        pageCount = { limitedTrending.size }
     )
 
     // Syncing the pagerState with the uiState
@@ -60,7 +82,8 @@ fun HomeScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding()
+            .systemBarsPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         // Horizontal Pager
@@ -72,20 +95,31 @@ fun HomeScreen(
 
                 HorizontalPager(
                     state = pagerState,
-                ) {
-                    PagerMovieCard("", listOf())
+                ) { page ->
+                    PagerMovieCard(
+                        movie = allTrending[page],
+                        modifier = Modifier
+                            .clickable {
+                                Toast.makeText(
+                                    context,
+                                    "${allTrending[page].tvTitle ?: allTrending[page].movieTitle} clicked",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                    )
                 }
-
-                PagerDotIndicators(
-                    pagerState = pagerState,
-                    modifier = Modifier
-                        .padding(top = 4.dp, bottom = 4.dp),
-                    onDotClick = { page ->
-                        onEvent(HomeScreenUiEvent.PagerDotClicked(page))
-                    }
-                )
             }
+
+            PagerDotIndicators(
+                pagerState = pagerState,
+                modifier = Modifier
+                    .padding(top = 4.dp, bottom = 4.dp),
+                onDotClick = { page ->
+                    onEvent(HomeScreenUiEvent.PagerDotClicked(page))
+                }
+            )
         }
+
 
         item {
             ShowTypeChip(
@@ -100,23 +134,36 @@ fun HomeScreen(
 
             if (uiState.showType == ShowType.MOVIE) {
                 MovieSection(
-                    movieThumbnails = movieThumbnails
+                    popularMovies = popularMovies,
+                    nowPlayingMovies = nowPlayingMovies,
+                    topRatedMovies = topRatedMovies
                 )
             } else {
                 TvSection(
-                    thumbNail = movieThumbnails
+                    onTheAirTv = onTheAirTv,
+                    airingTodayTv = airingTodayTv,
+                    popularTv = popularTv,
+                    topRatedTv = topRatedTv
                 )
             }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        item {
+            DisclaimerScreen()
         }
     }
 
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun PreviewHomeScreen() {
-    val uiState = HomeScreenUiState("", 0)
-    val viewModel = HomeScreenViewModel()
-
-    HomeScreen(uiState, onEvent = {}, viewModel)
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun PreviewHomeScreen() {
+//    val uiState = HomeScreenUiState("", 0)
+//    val viewModel = HomeScreenViewModel()
+//
+//    HomeScreen(uiState, onEvent = {}, viewModel)
+//}

@@ -102,7 +102,9 @@ fun FirstInitialScreen(
                     MovieCardThumbnail(
                         title = "Movie ${index + 1}",
                         imageUrl = thumbnailUrl,
-                        cardWidth = cellWidth.value.toInt()
+                        cardWidth = cellWidth.value.toInt(),
+                        type = "Movie",
+                        year = "2023"
                     )
                 }
             }
@@ -123,18 +125,18 @@ fun FirstInitialScreen(
 
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun PreviewFirstInitialScreen() {
-
-    val uiState = FirstInitialScreenUiState()
-    val navController = NavController(LocalContext.current)
-    val viewModel = FirstInitialScreenViewModel()
-
-    FirstInitialScreen(
-        uiState = uiState,
-        onEvent = { },
-        navController = navController,
-        viewModel = viewModel
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun PreviewFirstInitialScreen() {
+//
+//    val uiState = FirstInitialScreenUiState()
+//    val navController = NavController(LocalContext.current)
+//    val viewModel = FirstInitialScreenViewModel()
+//
+//    FirstInitialScreen(
+//        uiState = uiState,
+//        onEvent = { },
+//        navController = navController,
+//        viewModel = viewModel
+//    )
+//}

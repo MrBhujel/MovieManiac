@@ -13,6 +13,6 @@ fun MainScreenRoute(
     MainScreen(
         uiState = viewModel.uiState.value,
         onEvent = viewModel::onEvent,
-        navController = navController
+        navController = navController,
     )
 }

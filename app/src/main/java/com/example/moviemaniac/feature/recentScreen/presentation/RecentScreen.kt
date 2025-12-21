@@ -48,7 +48,7 @@ fun RecentScreen(modifier: Modifier = Modifier) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp, bottom = 12.dp),
+                        .padding(top =30.dp, bottom = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -73,7 +73,9 @@ fun RecentScreen(modifier: Modifier = Modifier) {
                     MovieCardThumbnail(
                         title = "Movie ${index + 1}",
                         imageUrl = thumbnailUrl,
-                        cardWidth = cellWidth.value.toInt()
+                        cardWidth = cellWidth.value.toInt(),
+                        type = "Movie",
+                        year = "2023"
                     )
                 }
             }
@@ -81,8 +83,8 @@ fun RecentScreen(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun PreviewRecentScreen() {
-    RecentScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun PreviewRecentScreen() {
+//    RecentScreen()
+//}

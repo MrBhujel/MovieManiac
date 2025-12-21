@@ -6,25 +6,44 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.moviemaniac.domain.model.AiringTodayTv
+import com.example.moviemaniac.domain.model.OnTheAirTv
+import com.example.moviemaniac.domain.model.PopularTv
+import com.example.moviemaniac.domain.model.TopRatedTv
 import com.example.moviemaniac.ui.components.MovieRowWithStatus
 
 @Composable
-fun TvSection(thumbNail: List<String>) {
+fun TvSection(
+    onTheAirTv: List<OnTheAirTv>,
+    airingTodayTv: List<AiringTodayTv>,
+    popularTv: List<PopularTv>,
+    topRatedTv: List<TopRatedTv>
+) {
 
-    // Now Playing
+    // Airing Today
     MovieRowWithStatus(
-        statusName = "Now Playing",
-        movieThumbnails = thumbNail,
+        statusName = "Airing Today",
+        movies = airingTodayTv,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp)
     )
 
 
+    // On The Air
+    MovieRowWithStatus(
+        statusName = "On The Air",
+        movies = onTheAirTv,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+    )
+
+
     // Popular
     MovieRowWithStatus(
         statusName = "Popular",
-        movieThumbnails = thumbNail,
+        movies = popularTv,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp, top = 10.dp)
@@ -34,18 +53,10 @@ fun TvSection(thumbNail: List<String>) {
     // Top Rated
     MovieRowWithStatus(
         statusName = "Top Rated",
-        movieThumbnails = thumbNail,
+        movies = topRatedTv,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp, top = 10.dp)
     )
 
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PreviewTvSection() {
-    val thumbNail: List<String> = listOf()
-
-    TvSection(thumbNail)
 }

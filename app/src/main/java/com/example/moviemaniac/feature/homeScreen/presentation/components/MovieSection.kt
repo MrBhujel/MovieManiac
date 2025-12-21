@@ -5,15 +5,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.moviemaniac.domain.model.NowPlayingMovie
+import com.example.moviemaniac.domain.model.PopularMovie
+import com.example.moviemaniac.domain.model.TopRatedMovie
 import com.example.moviemaniac.ui.components.MovieRowWithStatus
 
 @Composable
-fun MovieSection(movieThumbnails: List<String>) {
+fun MovieSection(
+    popularMovies: List<PopularMovie>,
+    nowPlayingMovies: List<NowPlayingMovie>,
+    topRatedMovies: List<TopRatedMovie>
+) {
 
     // Now Playing
     MovieRowWithStatus(
         statusName = "Now Playing",
-        movieThumbnails = movieThumbnails,
+        movies = nowPlayingMovies,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp)
@@ -23,7 +30,7 @@ fun MovieSection(movieThumbnails: List<String>) {
     // Popular
     MovieRowWithStatus(
         statusName = "Popular",
-        movieThumbnails = movieThumbnails,
+        movies = popularMovies,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp, top = 10.dp)
@@ -33,7 +40,7 @@ fun MovieSection(movieThumbnails: List<String>) {
     // Top Rated
     MovieRowWithStatus(
         statusName = "Top Rated",
-        movieThumbnails = movieThumbnails,
+        movies = topRatedMovies,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp, top = 10.dp)
