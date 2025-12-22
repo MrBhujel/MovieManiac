@@ -7,7 +7,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -54,4 +53,9 @@ object NetworkModule {
     @Singleton
     fun provideAllTrending(retrofit: Retrofit): AllTrendingApi =
         retrofit.create(AllTrendingApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMovieDetail(retrofit: Retrofit): MovieDetailScreenApi =
+        retrofit.create(MovieDetailScreenApi::class.java)
 }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.moviemaniac.domain.model.AiringTodayTv
 import com.example.moviemaniac.domain.model.OnTheAirTv
 import com.example.moviemaniac.domain.model.PopularTv
@@ -14,6 +15,7 @@ import com.example.moviemaniac.ui.components.MovieRowWithStatus
 
 @Composable
 fun TvSection(
+    navController: NavHostController,
     onTheAirTv: List<OnTheAirTv>,
     airingTodayTv: List<AiringTodayTv>,
     popularTv: List<PopularTv>,
@@ -26,7 +28,8 @@ fun TvSection(
         movies = airingTodayTv,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp)
+            .padding(start = 10.dp, end = 10.dp),
+        onItemClick = {}
     )
 
 
@@ -36,7 +39,8 @@ fun TvSection(
         movies = onTheAirTv,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 10.dp),
+        onItemClick = {}
     )
 
 
@@ -46,7 +50,8 @@ fun TvSection(
         movies = popularTv,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 10.dp),
+        onItemClick = {}
     )
 
 
@@ -56,7 +61,8 @@ fun TvSection(
         movies = topRatedTv,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 10.dp),
+        onItemClick = {}
     )
 
 }

@@ -13,7 +13,11 @@ import com.example.moviemaniac.feature.recentScreen.presentation.RecentScreen
 import com.example.moviemaniac.feature.searchScreen.presentation.components.SearchScreenRoute
 
 @Composable
-fun MainScreenNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
+fun MainScreenNavHost(
+    navController: NavHostController,
+    mainNavController: NavHostController,
+    modifier: Modifier = Modifier
+) {
 
     NavHost(navController = navController, startDestination = NavRoutes.movieScreen, builder = {
 
@@ -32,7 +36,7 @@ fun MainScreenNavHost(navController: NavHostController, modifier: Modifier = Mod
                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }
         ) {
-            HomeScreenRoute()
+            HomeScreenRoute(mainNavController = mainNavController)
         }
         composable(
             route = NavRoutes.tvShowScreen,

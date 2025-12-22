@@ -22,10 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.moviemaniac.R
+import androidx.navigation.NavHostController
 import com.example.moviemaniac.feature.homeScreen.presentation.components.DisclaimerScreen
 import com.example.moviemaniac.feature.homeScreen.presentation.components.MovieSection
 import com.example.moviemaniac.feature.homeScreen.presentation.components.PagerDotIndicators
@@ -35,6 +33,7 @@ import com.example.moviemaniac.feature.homeScreen.presentation.components.TvSect
 
 @Composable
 fun HomeScreen(
+    mainNavController: NavHostController,
     uiState: HomeScreenUiState,
     onEvent: (HomeScreenUiEvent) -> Unit,
     viewModel: HomeScreenViewModel
@@ -56,8 +55,6 @@ fun HomeScreen(
 
 
     var isAnimating by remember { mutableStateOf(false) }
-
-    val movieThumbnails = stringArrayResource(id = R.array.movie_thumbnails).toList()
 
     val pagerState = rememberPagerState(
         initialPage = uiState.currentHorizontalPagerPage,
@@ -136,14 +133,16 @@ fun HomeScreen(
                 MovieSection(
                     popularMovies = popularMovies,
                     nowPlayingMovies = nowPlayingMovies,
-                    topRatedMovies = topRatedMovies
+                    topRatedMovies = topRatedMovies,
+                    navController = mainNavController
                 )
             } else {
                 TvSection(
                     onTheAirTv = onTheAirTv,
                     airingTodayTv = airingTodayTv,
                     popularTv = popularTv,
-                    topRatedTv = topRatedTv
+                    topRatedTv = topRatedTv,
+                    navController = mainNavController
                 )
             }
         }

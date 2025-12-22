@@ -1,0 +1,19 @@
+package com.example.moviemaniac.domain.model
+
+data class MovieDetailScreenModel(
+    val movieId: Int,
+    val imdbId: String,
+    val originalTitle: String,
+    val title: String,
+    val backdropPath: String,
+    val posterPath: String,
+    val genre: List<Genre>,
+    val originalLanguage: String,
+    val overview: String,
+    val releaseDate: String,
+    val runtime: Int,
+    val status: String,
+    val tagline: String,
+    val voteAverage: Double,
+    val voteCount: Int
+)

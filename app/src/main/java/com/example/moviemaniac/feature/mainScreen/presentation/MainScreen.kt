@@ -32,9 +32,7 @@ import com.example.moviemaniac.ui.components.MainScreenNavHost
 
 @Composable
 fun MainScreen(
-    uiState: MainScreenUiState,
-    onEvent: (MainScreenUiEvent) -> Unit,
-    navController: NavHostController
+    mainNavController: NavHostController
 ) {
 
     val bottomNavItemList = listOf(
@@ -96,6 +94,7 @@ fun MainScreen(
     ) { innerPadding ->
         MainScreenNavHost(
             navController = innerNavController,
+            mainNavController = mainNavController,
             modifier = Modifier.padding(innerPadding)
         )
     }

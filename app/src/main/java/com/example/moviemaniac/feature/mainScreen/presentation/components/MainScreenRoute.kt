@@ -11,8 +11,6 @@ fun MainScreenRoute(
     viewModel: MainScreenViewModel = hiltViewModel(), navController: NavHostController
 ) {
     MainScreen(
-        uiState = viewModel.uiState.value,
-        onEvent = viewModel::onEvent,
-        navController = navController,
+        mainNavController = navController
     )
 }

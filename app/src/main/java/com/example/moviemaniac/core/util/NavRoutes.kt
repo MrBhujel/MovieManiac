@@ -8,4 +8,5 @@ object NavRoutes {
     var tvShowScreen = "tv_shows"
     var searchScreen = "search"
     var settingScreen = "setting"
+    var movieDetailScreen = "movie_detail"
 }

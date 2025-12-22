@@ -24,7 +24,8 @@ import com.example.moviemaniac.domain.model.MovieItem
 fun MovieRowWithStatus(
     statusName: String,
     movies: List<MovieItem>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onItemClick: (Int) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -74,6 +75,7 @@ fun MovieRowWithStatus(
                     year = movie.releaseDate,
                     modifier = Modifier
                         .clickable {
+                            onItemClick(movie.id)
                             Toast.makeText(context, "${movie.title} clicked!!!", Toast.LENGTH_SHORT)
                                 .show()
                         }

@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.moviemaniac.core.util.NavRoutes
 import com.example.moviemaniac.domain.model.NowPlayingMovie
 import com.example.moviemaniac.domain.model.PopularMovie
 import com.example.moviemaniac.domain.model.TopRatedMovie
@@ -12,6 +15,7 @@ import com.example.moviemaniac.ui.components.MovieRowWithStatus
 
 @Composable
 fun MovieSection(
+    navController: NavHostController,
     popularMovies: List<PopularMovie>,
     nowPlayingMovies: List<NowPlayingMovie>,
     topRatedMovies: List<TopRatedMovie>
@@ -23,7 +27,10 @@ fun MovieSection(
         movies = nowPlayingMovies,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp)
+            .padding(start = 10.dp, end = 10.dp),
+        onItemClick = { movieId ->
+            navController.navigate("${NavRoutes.movieDetailScreen}/$movieId")
+        }
     )
 
 
@@ -33,7 +40,10 @@ fun MovieSection(
         movies = popularMovies,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 10.dp),
+        onItemClick = { movieId ->
+            navController.navigate("${NavRoutes.movieDetailScreen}/$movieId")
+        }
     )
 
 
@@ -43,6 +53,9 @@ fun MovieSection(
         movies = topRatedMovies,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 10.dp),
+        onItemClick = { movieId ->
+            navController.navigate("${NavRoutes.movieDetailScreen}/$movieId")
+        }
     )
 }
