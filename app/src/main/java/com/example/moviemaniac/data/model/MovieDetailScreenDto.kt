@@ -1,6 +1,5 @@
 package com.example.moviemaniac.data.model
 
-import com.example.moviemaniac.domain.model.Genre
 import com.google.gson.annotations.SerializedName
 
 data class MovieDetailScreenDto(
@@ -24,7 +23,7 @@ data class MovieDetailScreenDto(
     val posterPath: String,
 
     @SerializedName("genres")
-    val genre: List<Genre>,
+    val genres: List<GenreDto>,
 
     @SerializedName("original_language")
     val originalLanguage: String,

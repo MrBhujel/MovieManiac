@@ -1,6 +1,6 @@
 package com.example.moviemaniac.domain.model
 
-data class Genre(
+data class Genres(
     val id: Int,
-    val genre: String
+    val name: String
 )

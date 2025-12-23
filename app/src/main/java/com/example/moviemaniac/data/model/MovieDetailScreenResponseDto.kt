@@ -1,4 +1,4 @@
-import com.example.moviemaniac.domain.model.Genre
+import com.example.moviemaniac.domain.model.Genres
 
 data class MovieDetailScreenResponseDto(
     val id: Int,
@@ -7,7 +7,7 @@ data class MovieDetailScreenResponseDto(
     val title: String,
     val backdropPath: String,
     val posterPath: String,
-    val genres: List<Genre>,
+    val genres: List<Genres>,
     val originalLanguage: String,
     val overview: String,
     val releaseDate: String,

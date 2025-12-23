@@ -1,7 +1,9 @@
 package com.example.moviemaniac.feature.homeScreen.presentation
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,8 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,8 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.moviemaniac.core.util.NavRoutes
 import com.example.moviemaniac.feature.homeScreen.presentation.components.DisclaimerScreen
 import com.example.moviemaniac.feature.homeScreen.presentation.components.MovieSection
 import com.example.moviemaniac.feature.homeScreen.presentation.components.PagerDotIndicators
@@ -79,9 +86,32 @@ fun HomeScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding(),
+            .systemBarsPadding()
+            .background(
+                MaterialTheme.colorScheme.background
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        // Trending This Week
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Trending this week",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Start,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(start = 20.dp, top = 20.dp)
+                )
+            }
+        }
 
         // Horizontal Pager
         item {
@@ -89,7 +119,6 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 HorizontalPager(
                     state = pagerState,
                 ) { page ->
@@ -102,7 +131,14 @@ fun HomeScreen(
                                     "${allTrending[page].tvTitle ?: allTrending[page].movieTitle} clicked",
                                     Toast.LENGTH_SHORT
                                 ).show()
+                            },
+                        onItemClick = { mediaType, movieId ->
+                            if (mediaType.lowercase() == "movie") {
+                                mainNavController.navigate("${NavRoutes.movieDetailScreen}/$movieId")
+                            } else {
+                                Toast.makeText(context, "TV item clicked: $movieId", Toast.LENGTH_SHORT).show()
                             }
+                        }
                     )
                 }
             }
@@ -152,7 +188,10 @@ fun HomeScreen(
         }
 
         item {
-            DisclaimerScreen()
+            DisclaimerScreen(
+                modifier = Modifier
+                    .padding(bottom = 65.dp)
+            )
         }
     }
 

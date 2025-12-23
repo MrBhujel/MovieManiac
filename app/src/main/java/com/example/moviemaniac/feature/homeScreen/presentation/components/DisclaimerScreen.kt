@@ -3,7 +3,6 @@ package com.example.moviemaniac.feature.homeScreen.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,15 +16,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun DisclaimerScreen() {
+fun DisclaimerScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF05060A),
-                        Color(0xFF0B1020)
+                        MaterialTheme.colorScheme.background,
+                        Color(0xFF2C0000)
                     )
                 )
             )
@@ -34,7 +33,7 @@ fun DisclaimerScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 40.dp, bottom = 24.dp),
+                .padding(top = 40.dp, bottom = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -43,7 +42,7 @@ fun DisclaimerScreen() {
             // Main headline
             Text(
                 text = "Watch your favorite shows and movies for\nfree with no ads ever! (っ˘ω˘ς )",
-                color = Color(0xFFB6C0FF),
+                color = Color(0xFFE57373),
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
                 lineHeight = 26.sp,
@@ -67,7 +66,7 @@ fun DisclaimerScreen() {
                 text = "Please note: Movie-Maniac does not host any files itself " +
                         "but instead only display's content from 3rd party providers. " +
                         "Legal issues should be taken up with them.",
-                color = Color(0xFF9AA4C7),
+                color = Color(0xFFEF9A9A),
                 fontSize = 14.sp,
                 lineHeight = 22.sp,
                 textAlign = TextAlign.Center,
@@ -77,7 +76,7 @@ fun DisclaimerScreen() {
             Spacer(modifier = Modifier.weight(1f))
 
             // Footer actions
-            FooterRow()
+            FooterRow(modifier = modifier)
         }
 
         // Floating scroll-to-top button (optional)
@@ -95,10 +94,9 @@ fun DisclaimerScreen() {
 }
 
 @Composable
-private fun FooterRow() {
+private fun FooterRow(modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier.fillMaxWidth()
-            .padding(bottom = 60.dp),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -118,7 +116,7 @@ private fun FooterRow() {
 private fun FooterItem(text: String) {
     Text(
         text = text,
-        color = Color(0xFF8B93C6),
+        color = Color(0xFFEF9A9A),
         fontSize = 13.sp,
         modifier = Modifier.alpha(0.9f)
     )

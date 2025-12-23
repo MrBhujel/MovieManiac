@@ -7,7 +7,7 @@ data class MovieDetailScreenModel(
     val title: String,
     val backdropPath: String,
     val posterPath: String,
-    val genre: List<Genre>,
+    val genres: List<Genres>,
     val originalLanguage: String,
     val overview: String,
     val releaseDate: String,

@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MovieManiacTheme {
+            MyAppTheme {
                 val navController = rememberNavController()
                 AppNavHost(navController)
 

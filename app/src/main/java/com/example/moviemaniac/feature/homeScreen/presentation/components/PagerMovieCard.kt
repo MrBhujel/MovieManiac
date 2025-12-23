@@ -1,5 +1,6 @@
 package com.example.moviemaniac.feature.homeScreen.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,13 +29,19 @@ import com.example.moviemaniac.domain.model.AllTrendingTopCard
 @Composable
 fun PagerMovieCard(
     movie: AllTrendingTopCard,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onItemClick: (String, Int) -> Unit,
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(3f / 2f)
-            .padding(10.dp),
+            .padding(10.dp)
+            .clickable(
+                onClick = {
+                    onItemClick(movie.mediaType, movie.id)
+                }
+            ),
     ) {
         Row(
             modifier = Modifier.fillMaxSize()
@@ -171,6 +178,7 @@ private fun PreviewPagerMovieCard() {
             mediaType = "Movie",
             movieReleaseDate = "2021-10-03",
             tvReleaseDate = ""
-        )
+        ),
+        onItemClick = { _, _ ->}
     )
 }

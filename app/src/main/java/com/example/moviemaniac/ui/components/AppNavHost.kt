@@ -15,7 +15,7 @@ import com.example.moviemaniac.feature.movieDetailScreen.component.MovieDetailSc
 @Composable
 fun AppNavHost(navController: NavHostController) {
 //    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = NavRoutes.screenA, builder = {
+    NavHost(navController = navController, startDestination = NavRoutes.mainScreen, builder = {
 
         // Initial first opening screen
         composable(
@@ -33,7 +33,7 @@ fun AppNavHost(navController: NavHostController) {
                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }
         ) {
-            FirstInitialScreenRoute(navController = navController)
+            MainScreenRoute(navController = navController)
         }
 
         // Navigating to home screen
