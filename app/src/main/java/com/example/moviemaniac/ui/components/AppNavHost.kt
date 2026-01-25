@@ -1,5 +1,6 @@
 package com.example.moviemaniac.ui.components
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -10,6 +11,8 @@ import androidx.navigation.navArgument
 import com.example.moviemaniac.core.util.NavRoutes
 import com.example.moviemaniac.feature.firstOpenScreen.presentation.components.FirstInitialScreenRoute
 import com.example.moviemaniac.feature.mainScreen.presentation.components.MainScreenRoute
+import com.example.moviemaniac.feature.mediaPlayerScreen.MediaPlayerScreen
+import com.example.moviemaniac.feature.mediaPlayerScreen.components.MediaPlayer
 import com.example.moviemaniac.feature.movieDetailScreen.component.MovieDetailScreenRoute
 
 @Composable
@@ -77,7 +80,34 @@ fun AppNavHost(navController: NavHostController) {
             }
         ) {
             val movieId = it.arguments?.getInt("movieId")!!
-            MovieDetailScreenRoute(movieId = movieId)
+            MovieDetailScreenRoute(movieId = movieId, mainNavController = navController)
+        }
+
+        // Navigating to media player screen
+        composable(
+            route = "${NavRoutes.mediaPlayerScreen}?videoUrl={videoUrl}",
+            arguments = listOf(
+                navArgument("videoUrl") {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            ),
+            enterTransition = {
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            exitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            popEnterTransition = {
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            },
+            popExitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
+        ) {
+            val encodeUrl = it.arguments?.getString("videoUrl") ?: ""
+            val videoUrl = Uri.decode(encodeUrl)
+            MediaPlayerScreen(videoUrl = encodeUrl)
         }
     })
 }

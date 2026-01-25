@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
             MyAppTheme {
                 val navController = rememberNavController()
                 AppNavHost(navController)
-
+//                TestExtractionScreen()
                 Log.d("AuthInterceptor", "Token: '${BuildConfig.TMDB_READ_TOKEN}'")
 
             }

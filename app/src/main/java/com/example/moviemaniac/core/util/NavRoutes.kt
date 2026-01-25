@@ -9,4 +9,5 @@ object NavRoutes {
     var searchScreen = "search"
     var settingScreen = "setting"
     var movieDetailScreen = "movie_detail"
+    var mediaPlayerScreen = "media_player"
 }

@@ -3,12 +3,14 @@ package com.example.moviemaniac.feature.movieDetailScreen.component
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.moviemaniac.feature.movieDetailScreen.MovieDetailScreen
 import com.example.moviemaniac.feature.movieDetailScreen.MovieDetailScreenViewModel
 
 @Composable
 fun MovieDetailScreenRoute(
     movieId: Int,
+    mainNavController: NavHostController,
     viewModel: MovieDetailScreenViewModel = hiltViewModel()
 ) {
 
@@ -19,6 +21,9 @@ fun MovieDetailScreenRoute(
     val movieDetail = viewModel.movieDetail.value
 
     movieDetail?.let {
-        MovieDetailScreen(movieDetail = it)
+        MovieDetailScreen(
+            movieDetail = it,
+            mainNavController = mainNavController
+        )
     }
 }

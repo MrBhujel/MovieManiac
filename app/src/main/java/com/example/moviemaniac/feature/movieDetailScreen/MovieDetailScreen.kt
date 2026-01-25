@@ -1,5 +1,6 @@
 package com.example.moviemaniac.feature.movieDetailScreen
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,17 +43,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
+import com.example.moviemaniac.core.util.NavRoutes
 import com.example.moviemaniac.domain.model.MovieDetailScreenModel
 import com.example.moviemaniac.feature.homeScreen.presentation.components.DisclaimerScreen
 import com.example.moviemaniac.feature.movieDetailScreen.component.GenreBackground
+import java.util.Locale
 
 @Composable
 fun MovieDetailScreen(
-    movieDetail: MovieDetailScreenModel
+    movieDetail: MovieDetailScreenModel,
+    mainNavController: NavHostController
 ) {
 
-    val formattedVoteAverage = String.format("%.1f", movieDetail.voteAverage)
+    val formattedVoteAverage = String.format(Locale.ROOT, "%.1f", movieDetail.voteAverage)
 
     LazyColumn(
         modifier = Modifier
@@ -291,7 +297,11 @@ fun MovieDetailScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Button(
-                    onClick = {},
+                    onClick = {
+                        val movieUrl = "https://vidsrcme.ru/embed/movie/${movieDetail.movieId}"
+                        val encodeUrl = Uri.encode(movieUrl)
+                        mainNavController.navigate("${NavRoutes.mediaPlayerScreen}?videoUrl=$encodeUrl")
+                    },
                     shape = RoundedCornerShape(8.dp),
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonDefaults.buttonColors(Color(0xFFD32F2F))
@@ -368,6 +378,7 @@ fun MovieDetailScreen(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewMovieDetailScreen() {
+    val mainNavController = rememberNavController()
     MovieDetailScreen(
         movieDetail = MovieDetailScreenModel(
             movieId = 123,
@@ -385,6 +396,7 @@ private fun PreviewMovieDetailScreen() {
             tagline = "This is the best tagline ever",
             voteAverage = 8.5,
             voteCount = 123
-        )
+        ),
+        mainNavController = mainNavController
     )
 }
