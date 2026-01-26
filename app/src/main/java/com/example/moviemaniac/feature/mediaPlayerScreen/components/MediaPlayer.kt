@@ -1,16 +1,15 @@
 package com.example.moviemaniac.feature.mediaPlayerScreen.components
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
+import android.webkit. WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -19,6 +18,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -31,12 +31,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.moviemaniac.core.util.AdBlocker
+import com.example.moviemaniac.core.util.findActivity
 import kotlinx.coroutines.delay
 import java.io.ByteArrayInputStream
 
@@ -48,6 +50,9 @@ fun MediaPlayer(
 ) {
     val context = LocalContext.current
     val activity = context.findActivity()
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    
     var isLoading by remember { mutableStateOf(true) }
     var showBars by remember { mutableStateOf(false) }
 
@@ -55,7 +60,8 @@ fun MediaPlayer(
     val toggleSystemBars = { show: Boolean ->
         activity?.window?.let { window ->
             val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-            if (show) {
+            // In portrait, bars appear everytime. In landscape, they follow user interaction.
+            if (isPortrait || show) {
                 insetsController.show(WindowInsetsCompat.Type.systemBars())
             } else {
                 insetsController.hide(WindowInsetsCompat.Type.systemBars())
@@ -65,20 +71,25 @@ fun MediaPlayer(
         }
     }
 
-    // Auto-hide system bars after a delay
-    LaunchedEffect(showBars) {
+    // Manage system bars based on state and orientation
+    LaunchedEffect(showBars, isPortrait) {
         toggleSystemBars(showBars)
-        if (showBars) {
+        if (showBars && !isPortrait) {
             delay(3000)
             showBars = false
         }
     }
 
-    // Ensure system bars are hidden on start and restored on exit
+    // Ensure system bars are handled on start/exit and screen stays on
     DisposableEffect(Unit) {
-        showBars = false
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         onDispose {
-            toggleSystemBars(true)
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            // Restore bars on exit
+            activity?.window?.let { window ->
+                val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+                insetsController.show(WindowInsetsCompat.Type.systemBars())
+            }
             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
@@ -89,13 +100,16 @@ fun MediaPlayer(
             .background(Color.Black)
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
-                    showBars = true
+                    if (!isPortrait) showBars = true
                 })
             },
         contentAlignment = Alignment.Center
     ) {
         AndroidView(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                // Player stays below system bars
+                .systemBarsPadding(),
             factory = { ctx ->
                 WebView(ctx).apply {
                     layoutParams = ViewGroup.LayoutParams(
@@ -107,9 +121,8 @@ fun MediaPlayer(
                     isFocusableInTouchMode = true
                     setLayerType(View.LAYER_TYPE_HARDWARE, null)
                     
-                    // Intercept WebView touches to show bars
                     setOnTouchListener { _, _ ->
-                        showBars = true
+                        if (!isPortrait) showBars = true
                         false
                     }
 
@@ -178,7 +191,9 @@ fun MediaPlayer(
                             customView = view
                             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                             
-                            // To actually show the full screen view, we add it to the decor view
+                            // Immersive mode for full-screen video
+                            toggleSystemBars(false)
+
                             (activity?.window?.decorView as? FrameLayout)?.addView(
                                 customView,
                                 FrameLayout.LayoutParams(
@@ -192,6 +207,9 @@ fun MediaPlayer(
                             (activity?.window?.decorView as? FrameLayout)?.removeView(customView)
                             customView = null
                             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                            
+                            // Re-evaluate bars based on orientation
+                            toggleSystemBars(false)
                         }
 
                         override fun onCreateWindow(
@@ -224,13 +242,4 @@ fun MediaPlayer(
             }
         }
     }
-}
-
-private fun Context.findActivity(): Activity? {
-    var context = this
-    while (context is ContextWrapper) {
-        if (context is Activity) return context
-        context = context.baseContext
-    }
-    return null
 }

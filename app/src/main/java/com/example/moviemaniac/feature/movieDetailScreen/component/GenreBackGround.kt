@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -17,21 +16,15 @@ import androidx.compose.ui.unit.sp
 fun GenreBackground(genre: String) {
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(6.dp))
-            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
     ) {
         Text(
             text = genre,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 10.sp,
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 12.sp,
             modifier = Modifier
-                .padding(horizontal = 6.dp, vertical = 1.dp)
+                .padding(horizontal = 10.dp, vertical = 4.dp)
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PreviewGenreBackground() {
-    GenreBackground(genre = "Action")
 }

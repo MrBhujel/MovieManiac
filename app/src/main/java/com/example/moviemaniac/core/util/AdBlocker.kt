@@ -17,24 +17,22 @@ object AdBlocker {
         "whos.amung.us", "histats.com", "yandex.ru", "mail.ru",
         "steepto.com", "mndtrk.com", "clktraffic.com", "bittube.video",
         "coinhive.com", "crypto-loot.com", "adskeeper.co.uk", "mgid.com",
-        "taboola.com", "outbrain.com", "revcontent.com", "adblade.com"
+        "taboola.com", "outbrain.com", "revcontent.com", "adblade.com",
+        "fastclick.net", "casalemedia.com", "yieldmo.com", "rubiconproject.com"
     )
 
     private val adKeywords = listOf(
         "/ads/", "popunder", "click", "tracker", "banner", "advert", 
         "analytics", "telemetry", "overlay", "popup", "moatads",
-        "partner", "pixel", "sponsor", "videowrapper", "adframe"
+        "partner", "pixel", "sponsor", "videowrapper", "adframe",
+        "prebid", "amazon-adsystem", "adnxs", "smartadserver",
+        "jads.co", "ad-delivery", "adform", "adroll", "adverline"
     )
 
     fun shouldBlock(request: WebResourceRequest?): Boolean {
         val url = request?.url?.toString()?.lowercase() ?: return false
-        
-        // Block by domain
         if (adDomains.any { url.contains(it) }) return true
-        
-        // Block by keyword
         if (adKeywords.any { url.contains(it) }) return true
-        
         return false
     }
 
@@ -49,47 +47,66 @@ object AdBlocker {
     fun getAdBlockingScript(): String {
         return """
             (function() {
-                const blockSelectors = [
-                    'div[class*="overlay"]', 'div[id*="overlay"]', 
-                    'div[class*="popup"]', 'div[id*="popup"]',
-                    'div[class*="ads"]', 'div[id*="ads"]',
-                    'iframe[src*="chatmate"]', 'iframe[src*="ad"]',
-                    'a[href*="click"]', 'div[style*="z-index: 2147483647"]',
-                    '.video-ad-overlay', '.ad-skip-button'
-                ];
+                // 1. MOCK ENVIRONMENT
+                window.canRunAds = true;
+                window.isAdBlockActive = false;
+                window.adsbygoogle = { push: function() {} };
+                
+                // 2. CSS INJECTION - Hide elements and prepare patch styling
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .vidsrc-logo, #vidsrc-logo, [class*="logo"], [id*="logo"], 
+                    .vjs-vidsrc-link, .vidsrc-link, .branding, [class*="branding"] {
+                        display: none !important;
+                        opacity: 0 !important;
+                        visibility: hidden !important;
+                    }
+                    .logo-patch {
+                        position: absolute !important;
+                        background-color: black !important;
+                        z-index: 2147483647 !important;
+                        pointer-events: none !important;
+                    }
+                `;
+                document.head.appendChild(style);
 
-                function removeAds() {
-                    blockSelectors.forEach(selector => {
-                        document.querySelectorAll(selector).forEach(el => {
-                            el.remove();
-                        });
-                    });
-                    
-                    // Kill anti-adblock and popups
-                    window.open = function() { return null; };
-                    window.alert = function() { return null; };
-                    
-                    // Stop aggressive scripts from creating new elements
-                    const observer = new MutationObserver((mutations) => {
-                        mutations.forEach((mutation) => {
-                            mutation.addedNodes.forEach((node) => {
-                                if (node.nodeType === 1) {
-                                    blockSelectors.forEach(selector => {
-                                        if (node.matches(selector)) node.remove();
-                                        node.querySelectorAll(selector).forEach(el => el.remove());
-                                    });
+                function cleanup() {
+                    // 3. APPLY BLACK PATCH OVER LOGO TEXT
+                    // We search for elements containing 'VIDSRC' and cover them with a black box
+                    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+                    let node;
+                    while(node = walker.nextNode()) {
+                        const content = node.textContent.toUpperCase();
+                        if (content.includes('VIDSRC')) {
+                            const parent = node.parentElement;
+                            if (parent && parent.tagName !== 'SCRIPT' && parent.tagName !== 'STYLE') {
+                                const rect = parent.getBoundingClientRect();
+                                if (rect.width > 0 && rect.height > 0) {
+                                    let patch = document.getElementById('patch-' + parent.className.split(' ')[0]);
+                                    if (!patch) {
+                                        patch = document.createElement('div');
+                                        patch.className = 'logo-patch';
+                                        patch.id = 'patch-' + parent.className.split(' ')[0];
+                                        document.body.appendChild(patch);
+                                    }
+                                    patch.style.top = (rect.top + window.scrollY) + 'px';
+                                    patch.style.left = (rect.left + window.scrollX) + 'px';
+                                    patch.style.width = rect.width + 'px';
+                                    patch.style.height = rect.height + 'px';
+                                    
+                                    // Also try to hide the parent directly
+                                    parent.style.setProperty('color', 'black', 'important');
+                                    parent.style.setProperty('background-color', 'black', 'important');
                                 }
-                            });
-                        });
-                    });
-                    observer.observe(document.body, { childList: true, subtree: true });
+                            }
+                        }
+                    }
+
+                    window.open = function() { return null; };
                 }
 
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', removeAds);
-                } else {
-                    removeAds();
-                }
+                cleanup();
+                setInterval(cleanup, 500);
             })();
         """.trimIndent()
     }

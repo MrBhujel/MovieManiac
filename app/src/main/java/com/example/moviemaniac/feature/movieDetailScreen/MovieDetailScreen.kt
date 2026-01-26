@@ -1,36 +1,45 @@
 package com.example.moviemaniac.feature.movieDetailScreen
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +49,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,321 +67,235 @@ fun MovieDetailScreen(
     movieDetail: MovieDetailScreenModel,
     mainNavController: NavHostController
 ) {
-
+    val scrollState = rememberLazyListState()
+    val showTopBar by remember {
+        derivedStateOf { scrollState.firstVisibleItemIndex > 0 }
+    }
+    
     val formattedVoteAverage = String.format(Locale.ROOT, "%.1f", movieDetail.voteAverage)
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .systemBarsPadding()
-    ) {
-        item {
-
-            val posterWidth = 200.dp
-            val posterAspectRatio = 2f / 3f
-            val posterHeight = posterWidth / posterAspectRatio
-            val headerHeight = posterHeight + 80.dp
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(headerHeight)
-            ) {
-                AsyncImage(
-                    model = "https://image.tmdb.org/t/p/w500${movieDetail.backdropPath}",
-                    contentDescription = "BackDrop Poster",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = scrollState,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            // Header Image Section with Gradient Overlay
+            item {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
-                        .height(posterHeight)
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    MaterialTheme.colorScheme.background
+                        .height(450.dp)
+                ) {
+                    AsyncImage(
+                        model = "https://image.tmdb.org/t/p/original${movieDetail.backdropPath}",
+                        contentDescription = "BackDrop Poster",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                    // Sophisticated Gradient
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Transparent,
+                                        MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+                                        MaterialTheme.colorScheme.background
+                                    )
                                 )
                             )
+                    )
+
+                    // Title and Tagline floating over backdrop
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(20.dp)
+                    ) {
+                        Text(
+                            text = movieDetail.title,
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 40.sp
                         )
-                )
-
-                AsyncImage(
-                    model = "https://image.tmdb.org/t/p/w500${movieDetail.posterPath}",
-                    contentDescription = "Poster Image",
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .width(posterWidth)
-                        .aspectRatio(posterAspectRatio)
-                        .clip(RoundedCornerShape(8.dp))
-                )
+                        if (movieDetail.tagline.isNotEmpty()) {
+                            Text(
+                                text = movieDetail.tagline,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.White.copy(alpha = 0.8f),
+                                fontStyle = FontStyle.Italic
+                            )
+                        }
+                    }
+                }
             }
-        }
 
-        // Release Date, Run Time, Rating, genre and language
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-
-                // Release Date, Run time and Rating
+            // Quick Info Bar (Rating, Year, Duration)
+            item {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-
-                    // Release Date
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            Icons.Default.CalendarToday,
-                            contentDescription = "Release Date",
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier
-                                .size(13.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = movieDetail.releaseDate,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 13.sp
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(14.dp))
-
-                    Icon(
-                        Icons.Default.Circle,
-                        contentDescription = "Pointer",
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        modifier = Modifier.size(6.dp)
-                    )
-
-                    Spacer(modifier = Modifier.width(14.dp))
-
-                    // Run Time
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            Icons.Default.AccessTime,
-                            contentDescription = "Runtime",
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(13.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = "${movieDetail.runtime}m",
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 13.sp
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(14.dp))
-
-                    Icon(
-                        Icons.Default.Circle,
-                        contentDescription = "Pointer",
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        modifier = Modifier.size(6.dp)
-                    )
-
-                    Spacer(modifier = Modifier.width(14.dp))
-
-                    // Rating
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            Icons.Default.Star,
-                            contentDescription = "Rating",
-                            tint = Color.Yellow,
-                            modifier = Modifier.size(13.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = formattedVoteAverage,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 13.sp
-                        )
-                    }
+                    InfoItem(icon = Icons.Default.Star, text = formattedVoteAverage, color = Color(0xFFFFC107))
+                    InfoItem(icon = Icons.Default.CalendarToday, text = movieDetail.releaseDate.take(4))
+                    InfoItem(icon = Icons.Default.AccessTime, text = "${movieDetail.runtime} min")
                 }
+            }
 
-                // Genre
+            // Action Buttons
+            item {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    repeat(movieDetail.genres.size) { index ->
-                        GenreBackground(movieDetail.genres[index].name)
-
-                        if (index < movieDetail.genres.size - 1) {
-                            Spacer(modifier = Modifier.width(10.dp))
-                        }
+                    Button(
+                        onClick = {
+                            val movieUrl = "https://vidsrc.cc/v2/embed/movie/${movieDetail.movieId}"
+                            val encodeUrl = Uri.encode(movieUrl)
+                            mainNavController.navigate("${NavRoutes.mediaPlayerScreen}?videoUrl=$encodeUrl")
+                        },
+                        modifier = Modifier.weight(1f).height(56.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
+                    ) {
+                        Icon(Icons.Default.PlayArrow, contentDescription = null, modifier = Modifier.size(28.dp), tint = Color.White)
+                        Spacer(Modifier.width(8.dp))
+                        Text("Watch Now", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White)
                     }
                 }
+            }
 
-                // Language
+            // Genres Chips
+            item {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = "Original Language: ",
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 10.sp
-                    )
-                    GenreBackground(movieDetail.originalLanguage)
-                }
-            }
-        }
-
-        // Title
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                // Title
-                Text(
-                    text = movieDetail.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 25.sp,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Text(
-                    text = movieDetail.tagline,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
-                    fontStyle = FontStyle.Italic
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                // Original Title
-                Text(
-                    text = "Original Title: ${movieDetail.originalTitle}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-
-        // Watch Button
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Button(
-                    onClick = {
-                        val movieUrl = "https://vidsrcme.ru/embed/movie/${movieDetail.movieId}"
-                        val encodeUrl = Uri.encode(movieUrl)
-                        mainNavController.navigate("${NavRoutes.mediaPlayerScreen}?videoUrl=$encodeUrl")
-                    },
-                    shape = RoundedCornerShape(8.dp),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(Color(0xFFD32F2F))
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(
-                                start = 10.dp,
-                                end = 17.dp,
-                                top = 2.dp,
-                                bottom = 2.dp
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            Icons.Default.PlayArrow,
-                            contentDescription = "Play Icon",
-                            tint = Color.White
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .width(10.dp)
-                                .displayCutoutPadding()
-                        )
-                        Text(
-                            text = "Play",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color.White,
-                            fontWeight = FontWeight.Black
-                        )
+                    movieDetail.genres.take(3).forEach { genre ->
+                        GenreBackground(genre.name)
                     }
                 }
             }
-        }
 
-        // Overview
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 20.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Overview",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Center
-                )
+            // Detailed Content Section
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Text(
+                            text = "Storyline",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = movieDetail.overview,
+                            style = MaterialTheme.typography.bodyLarge,
+                            lineHeight = 24.sp,
+                            color = Color.White.copy(alpha = 0.8f),
+                            textAlign = TextAlign.Justify
+                        )
+                        
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 20.dp),
+                            thickness = 0.5.dp,
+                            color = Color.White.copy(alpha = 0.1f)
+                        )
+                        
+                        DetailRow(label = "Original Title", value = movieDetail.originalTitle)
+                        DetailRow(label = "Original Language", value = movieDetail.originalLanguage.uppercase())
+                    }
+                }
+            }
 
-                Spacer(modifier = Modifier.height(5.dp))
-
-                Text(
-                    text = movieDetail.overview,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                    textAlign = TextAlign.Justify
-                )
+            // Disclaimer Section
+            item {
+                DisclaimerScreen(modifier = Modifier.padding(bottom = 32.dp))
             }
         }
 
-        // Disclaimer Section
-        item {
-            DisclaimerScreen(
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-            )
+        // Floating Back Button
+        IconButton(
+            onClick = { mainNavController.popBackStack() },
+            modifier = Modifier
+                .padding(top = 48.dp, start = 16.dp)
+                .size(48.dp)
+                .clip(CircleShape)
+                .background(Color.Black.copy(alpha = 0.5f)),
+            colors = IconButtonDefaults.iconButtonColors(contentColor = Color.White)
+        ) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
+
+        // Floating Top Bar (appears on scroll)
+        AnimatedVisibility(
+            visible = showTopBar,
+            enter = fadeIn() + slideInVertically(),
+            modifier = Modifier.align(Alignment.TopCenter)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.95f))
+                    .padding(top = 48.dp, bottom = 12.dp, start = 16.dp, end = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = { mainNavController.popBackStack() }, colors = IconButtonDefaults.iconButtonColors(contentColor = Color.White)) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                }
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = movieDetail.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoItem(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String, color: Color = Color.Gray) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp), tint = color)
+        Spacer(Modifier.width(6.dp))
+        Text(text = text, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium, color = Color.White)
+    }
+}
+
+@Composable
+fun DetailRow(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(label, color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodyMedium)
+        Text(value, fontWeight = FontWeight.Medium, style = MaterialTheme.typography.bodyMedium, color = Color.White)
     }
 }
 
@@ -383,19 +307,19 @@ private fun PreviewMovieDetailScreen() {
         movieDetail = MovieDetailScreenModel(
             movieId = 123,
             imdbId = "tt12345",
-            originalTitle = "Original Title",
-            title = "Title",
-            backdropPath = "Backdrop Path",
+            originalTitle = "The Godfather",
+            title = "The Godfather",
+            backdropPath = "",
             posterPath = "",
             genres = listOf(),
             originalLanguage = "en",
-            overview = "This is the overview of the movie that we want to see.",
-            releaseDate = "2025",
-            runtime = 120,
-            status = "",
-            tagline = "This is the best tagline ever",
-            voteAverage = 8.5,
-            voteCount = 123
+            overview = "An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son.",
+            releaseDate = "1972-03-14",
+            runtime = 175,
+            status = "Released",
+            tagline = "An offer you can't refuse.",
+            voteAverage = 9.2,
+            voteCount = 18000
         ),
         mainNavController = mainNavController
     )
